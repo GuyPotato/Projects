@@ -1,0 +1,108 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+struct FoodEntry {
+    string meal;
+    string foodName;
+    double calories=0;
+    double protein=0;
+    double carbohydrates=0;
+    double fat=0;
+    double total_calories=0;
+    double total_protein=0;
+    double total_carbohydrates=0;
+    double total_fat=0;
+};
+
+// Function to add a food entry 
+
+void addFoodEntry(ofstream& file, FoodEntry& entry) {
+    cout << "Is this Breakfast, Lunch, or Dinner?   ";
+    cin >> entry.meal;
+
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cout << "Enter food name: ";
+    getline(cin, entry.foodName);
+
+    cout << "Enter Calorie count: ";
+    cin >> entry.calories;
+    cout << "Enter grams of protein: ";
+    cin >> entry.protein;
+    cout << "Enter grams of carbohydrates: ";
+    cin >> entry.carbohydrates;
+    cout << "Enter grams of fat: ";
+    cin >> entry.fat;
+
+    entry.total_calories += entry.calories;
+    entry.total_carbohydrates += entry.carbohydrates;
+    entry.total_fat += entry.fat;
+    entry.total_protein += entry.protein;
+
+    file << "Meal: " << entry.meal << "\n";
+    file << "Food Name: " << entry.foodName << "\n";
+    file << "Calories: " << entry.calories << "\n";
+    file << "Protein (g): " << entry.protein << "\n";
+    file << "Carbohydrates (g): " << entry.carbohydrates << "\n";
+    file << "Fat (g): " << entry.fat << "\n";
+    file << "------------------------------\n";
+}
+
+void EODmeals(ofstream& file, const FoodEntry& entry) {
+    file << "Total calories for the day: " << entry.total_calories << "\n";
+    file << "Total Protein for the day: " << entry.total_protein << "\n";
+    file << "Total Carbs for the day: " << entry.total_carbohydrates << "\n";
+    file << "Total Fat for the day: " << entry.total_fat << "\n";
+}
+/*void EODmeals(ofstream& file) {
+    FoodEntry entry;
+    file << "Total calories for the day: " << addFoodEntry(entry.total_calories,entry.total_protein);
+    file << "Total Protein for the day: " << entry.total_protein;
+    file << "Total Carbs for the day: " << entry.total_carbohydrates;
+    file << "Total Fat for the day: " << entry.total_fat;
+   
+}*/
+
+int main() {
+    ofstream outFile("calories_eaten.txt", ios::app); // Open the file in append mode
+
+    if (!outFile) {
+        cerr << "Error opening the file!" << endl;
+        return 1;
+    }
+
+    char choice;
+    FoodEntry entry; // Create a single FoodEntry object
+
+    do {
+        cout << " " << endl;
+        cout << "Calorie Counter App" << endl;
+        cout << "1. Add Food Entry" << endl;
+        cout << "2. End Day" << endl;
+        cout << "3. Quit" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case '1':
+            addFoodEntry(outFile, entry); // Pass the entry object by reference
+            break;
+        case '2':
+            EODmeals(outFile, entry); // Pass the entry object by reference
+            break;
+        case '3':
+            cout << "Exiting the program." << endl;
+            break;
+        default:
+            cout << "Invalid choice. Try again." << endl;
+        }
+    } while (choice != '3');
+
+    outFile.close(); // Close the file
+
+    return 0;
+}
+
+   
